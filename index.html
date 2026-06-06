@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inírida Comercial | El Directorio Web de Guainía</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Poppins', sans-serif; }
+        /* Efecto Parallax Puro */
+        .parallax-hero {
+            background-image: linear-gradient(rgba(15, 23, 42, 0.65), rgba(15, 23, 42, 0.85)), url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1920&q=80');
+            background-attachment: fixed;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+        /* Ocultar barra de scroll en contenedores horizontales */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        /* Cortes de texto */
+        .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .line-clamp-3 { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans antialiased">
+
+    <header class="parallax-hero h-[60vh] min-h-[400px] flex flex-col justify-center items-center text-center px-4 relative">
+        <div class="max-w-3xl mx-auto space-y-6">
+            <h1 class="text-4xl md:text-6xl font-extrabold text-white tracking-tight drop-shadow-md">
+                Inírida <span class="text-yellow-400">Comercial</span>
+            </h1>
+            <p class="text-lg md:text-xl text-gray-200 font-light max-w-xl mx-auto drop-shadow">
+                Descubre los mejores comercios, sabores y servicios en el corazón de Guainía.
+            </p>
+            
+            <div class="w-full max-w-2xl mx-auto pt-2">
+                <div class="bg-white rounded-full shadow-xl flex items-center p-2 border border-gray-200 focus-within:ring-2 focus-within:ring-indigo-500 transition-all">
+                    <div class="pl-4 pr-2 text-gray-400">
+                        <i class="fa-solid fa-magnifying-glass text-lg"></i>
+                    </div>
+                    <input type="text" id="searchInput" onkeyup="buscarComercio()" placeholder="Buscar restaurantes, odontólogos, licores..." class="w-full bg-transparent pr-4 py-2 text-gray-700 focus:outline-none text-base md:text-lg">
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section class="max-w-7xl mx-auto px-4 py-8 -mt-8 relative z-10">
+        <div class="bg-white rounded-2xl shadow-md p-6 border border-gray-100 flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div class="w-full md:w-3/4">
+                <h2 class="text-xs font-bold tracking-wider text-slate-400 uppercase mb-4">Explorar por Categoría</h2>
+                <div class="flex overflow-x-auto gap-3 pb-2 no-scrollbar scroll-smooth" id="categoriesContainer">
+                    <button onclick="filtrarCategoria('Todos')" class="cat-btn bg-indigo-900 text-white border border-transparent px-5 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-2 whitespace-nowrap shadow-sm transition-all">✨ Todos</button>
+                    <button onclick="filtrarCategoria('Almuerzos')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-5 py-2.5 rounded-xl text-sm font-medium flex items-center gap-2 whitespace-nowrap hover:bg-gray-50 transition-all">🍲 Almuerzos</button>
+                    <button onclick="filtrarCategoria('Restaurantes')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-5 py-2.5 rounded-xl text-sm font-medium flex items-center gap-2 whitespace-nowrap hover:bg-gray-50 transition-all">🍔 Restaurantes</button>
+                    <button onclick="filtrarCategoria('Salud / Citas')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-5 py-2.5 rounded-xl text-sm font-medium flex items-center gap-2 whitespace-nowrap hover:bg-gray-50 transition-all">🩺 Salud / Citas</button>
+                    <button onclick="filtrarCategoria('Licores')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-5 py-2.5 rounded-xl text-sm font-medium flex items-center gap-2 whitespace-nowrap hover:bg-gray-50 transition-all">🍻 Licores</button>
+                    <button onclick="filtrarCategoria('Comercio')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-5 py-2.5 rounded-xl text-sm font-medium flex items-center gap-2 whitespace-nowrap hover:bg-gray-50 transition-all">🏪 Comercio</button>
+                    <button onclick="filtrarCategoria('Servicios')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-5 py-2.5 rounded-xl text-sm font-medium flex items-center gap-2 whitespace-nowrap hover:bg-gray-50 transition-all">🛠️ Servicios</button>
+                    <button onclick="filtrarCategoria('Hoteles')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-5 py-2.5 rounded-xl text-sm font-medium flex items-center gap-2 whitespace-nowrap hover:bg-gray-50 transition-all">🏨 Hoteles</button>
+                </div>
+            </div>
+
+            <div class="w-full md:w-1/4 min-w-[200px]">
+                <label for="sortSelect" class="block text-xs font-bold text-slate-400 uppercase mb-2">Ordenar listados por:</label>
+                <select id="sortSelect" onchange="cambiarOrdenamiento()" class="w-full bg-slate-50 border border-gray-200 text-slate-700 text-sm font-semibold rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all">
+                    <option value="relevancia">⭐ Relevancia</option>
+                    <option value="nuevo">📅 Más Nuevo</option>
+                    <option value="puntuacion">📈 Mejor Puntuado</option>
+                    <option value="alfabetico">🔤 Orden Alfabético (A-Z)</option>
+                </select>
+            </div>
+        </div>
+    </section>
+
+    <main class="max-w-7xl mx-auto px-4 space-y-12 pb-16">
+
+        <section id="sec-novedades">
+            <div class="flex items-center justify-between mb-6">
+                <div>
+                    <h2 class="text-xl md:text-2xl font-extrabold text-slate-900 uppercase tracking-tight">Novedades de Empresas</h2>
+                    <p class="text-sm text-gray-500">Los comercios más recientes que se unen a nuestra red</p>
+                </div>
+                <span class="bg-indigo-50 text-indigo-700 text-xs font-semibold px-3 py-1.5 rounded-full" id="count-novedades">Mostrando: 0</span>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6" id="grid-novedades"></div>
+        </section>
+
+        <section id="sec-promociones" class="border-t border-gray-200 pt-10">
+            <div class="flex items-center justify-between mb-6">
+                <div>
+                    <h2 class="text-xl md:text-2xl font-extrabold text-slate-900 uppercase tracking-tight">Promociones y Eventos de la Semana</h2>
+                    <p class="text-sm text-gray-500">¡Ahorra y disfruta con las mejores ofertas locales!</p>
+                </div>
+                <span class="bg-amber-50 text-amber-700 text-xs font-semibold px-3 py-1.5 rounded-full" id="count-promociones">Mostrando: 0</span>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6" id="grid-promociones"></div>
+        </section>
+
+        <section id="sec-destacados" class="border-t border-gray-200 pt-10">
+            <div class="flex items-center justify-between mb-6">
+                <div>
+                    <h2 class="text-xl md:text-2xl font-extrabold text-slate-900 uppercase tracking-tight">Establecimientos Destacados</h2>
+                    <p class="text-sm text-gray-500">Ordenados automáticamente de mayor a menor por su calidad y estrellas</p>
+                </div>
+                <span class="bg-emerald-50 text-emerald-700 text-xs font-semibold px-3 py-1.5 rounded-full" id="count-destacados">Mostrando: 0</span>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6" id="grid-destacados"></div>
+        </section>
+
+        <section id="blog-section" class="border-t border-gray-200 pt-10">
+            <div class="mb-6">
+                <h2 class="text-xl md:text-2xl font-extrabold text-slate-900 uppercase tracking-tight">Blog & Crónicas Locales</h2>
+                <p class="text-sm text-gray-500">Historias de nuestra tierra, turismo y gastronomía de Inírida</p>
+            </div>
+            <div id="blog-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="col-span-full text-center py-6 text-gray-400 text-sm">
+                    <i class="fa-solid fa-spinner fa-spin mr-2 text-xl block mb-2"></i> Cargando ecosistema...
+                </div>
+            </div>
+        </section>
+
+        <section id="contacto-section" class="bg-gradient-to-br from-slate-900 to-indigo-950 text-white rounded-3xl p-8 md:p-12 shadow-xl border border-slate-800">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                <div class="lg:col-span-5 space-y-4">
+                    <span class="text-yellow-400 font-bold uppercase tracking-widest text-xs">¡Haz crecer tu negocio!</span>
+                    <h2 class="text-3xl font-extrabold tracking-tight">¿Quieres publicar en este directorio comercial?</h2>
+                    <p class="text-slate-300 text-sm leading-relaxed">
+                        Únete al portal web con mayor impacto en Inírida. Registra tus datos en el formulario y envíalo directamente a nuestro WhatsApp oficial para empezar a recibir clientes de manera inmediata.
+                    </p>
+                    <div class="pt-2">
+                        <a href="https://wa.me/573102881717" target="_blank" class="inline-flex items-center gap-2 text-yellow-400 hover:text-yellow-300 font-semibold transition-colors">
+                            <i class="fa-brands fa-whatsapp text-xl"></i> +57 310 2881717
+                        </a>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-7 bg-white/5 backdrop-blur-sm p-6 rounded-2xl border border-white/10">
+                    <form id="whatsappForm" onsubmit="enviarFormularioWhatsApp(event)" class="space-y-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 uppercase mb-1">Nombre Completo</label>
+                                <input type="text" id="formNombre" required class="w-full bg-slate-900/60 border border-slate-700 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-yellow-400 text-sm transition-all">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 uppercase mb-1">Celular / WhatsApp</label>
+                                <input type="tel" id="formCelular" required class="w-full bg-slate-900/60 border border-slate-700 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-yellow-400 text-sm transition-all">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 uppercase mb-1">Nombre de la Empresa</label>
+                            <input type="text" id="formEmpresa" required class="w-full bg-slate-900/60 border border-slate-700 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-yellow-400 text-sm transition-all">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 uppercase mb-1">¿De qué se trata tu negocio?</label>
+                            <textarea id="formDescripcion" rows="3" required placeholder="Ej: Venta de comida rápida, ropa exclusiva..." class="w-full bg-slate-900/60 border border-slate-700 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-yellow-400 text-sm transition-all resize-none"></textarea>
+                        </div>
+                        <button type="submit" class="w-full bg-yellow-400 hover:bg-yellow-500 text-slate-950 font-bold py-3 px-6 rounded-xl transition-all shadow-md flex items-center justify-center gap-2 text-sm uppercase tracking-wider">
+                            <i class="fa-brands fa-whatsapp text-lg"></i> Enviar información a WhatsApp
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-slate-900 text-slate-400 text-center py-8 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 space-y-2">
+            <p class="text-sm">&copy; 2026 Inírida Comercial. Todos los derechos reservados.</p>
+            <p class="text-xs font-medium text-slate-500 tracking-widest uppercase">
+                Creado por: <span class="text-indigo-400 font-bold transition-colors hover:text-yellow-400">JrNaranjo</span>
+            </p>
+        </div>
+    </footer>
+
+    <div id="cronicaModal" class="fixed inset-0 z-[100] hidden bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-4 opacity-0 transition-opacity duration-300">
+        <div class="bg-white rounded-2xl w-full max-w-3xl max-h-[90vh] overflow-y-auto shadow-2xl transform scale-95 transition-transform duration-300 relative" id="cronicaContent">
+            <button onclick="cerrarModalCronica()" class="absolute top-4 right-4 bg-slate-900/60 hover:bg-slate-900 text-white w-10 h-10 rounded-full flex items-center justify-center z-10 transition-colors backdrop-blur-md shadow-lg">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            <div id="modalBody" class="pb-8"></div>
+        </div>
+    </div>
+
+    <script>
+        // 1. URL DE APPS SCRIPT
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzvYrJbxWr8NWBP63ChL6qtF_qKX5IQtBzHXokpqTlWCKJ7rPA06yATAdC8_qr1Dcbl/exec'; 
+
+        // 2. VARIABLES DE ESTADO
+        let listaComerciosGlobal = [];
+        let listaCronicasGlobal = []; 
+        let categoriaActual = 'Todos';
+        let ordenActual = 'relevancia';
+
+        // 3. DESCARGA INICIAL DE DATOS
+        async function cargarDirectorioVivo() {
+            try {
+                const respuesta = await fetch(SCRIPT_URL);
+                const datos = await respuesta.json(); 
+                
+                // Comercios
+                if(datos.comercios) {
+                    listaComerciosGlobal = datos.comercios.filter(item => item.estado_pago && item.estado_pago.toLowerCase() === 'activo');
+                    renderizarDirectorio(); 
+                }
+
+                // Crónicas
+                if(datos.cronicas) {
+                    let activas = datos.cronicas.filter(c => c.estado && c.estado.toLowerCase() === 'activo');
+                    activas.reverse();
+                    let top4 = activas.slice(0, 4);
+                    listaCronicasGlobal = top4; 
+                    renderizarCronicas(top4);
+                }
+            } catch (error) {
+                console.error('Error de conexión:', error);
+                document.getElementById('blog-grid').innerHTML = `<p class="col-span-full text-center text-red-400 text-sm font-bold">Error de conexión con Google.</p>`;
+            }
+        }
+
+        // 4. FILTROS Y RENDER DE COMERCIOS (¡Tu lógica original restaurada!)
+        function renderizarDirectorio() {
+            // A) Aplicar Filtro de Categoría
+            let filtrados = listaComerciosGlobal;
+            if (categoriaActual !== 'Todos') {
+                filtrados = filtrados.filter(item => item.categoria && item.categoria.toLowerCase().includes(categoriaActual.toLowerCase()));
+            }
+
+            // B) Aplicar Ordenamiento Matemático y Alfabético
+            if (ordenActual === 'relevancia') {
+                filtrados.sort((a, b) => Number(a.id) - Number(b.id)); 
+            } else if (ordenActual === 'nuevo') {
+                filtrados.sort((a, b) => Number(b.id) - Number(a.id)); 
+            } else if (ordenActual === 'puntuacion') {
+                filtrados.sort((a, b) => Number(b.estrellas || 0) - Number(a.estrellas || 0));
+            } else if (ordenActual === 'alfabetico') {
+                filtrados.sort((a, b) => (a.nombre || '').localeCompare(b.nombre || ''));
+            }
+
+            // C) Obtener las cajas HTML
+            const gridNovedades = document.getElementById('grid-novedades');
+            const gridPromociones = document.getElementById('grid-promociones');
+            const gridDestacados = document.getElementById('grid-destacados');
+
+            gridNovedades.innerHTML = '';
+            gridPromociones.innerHTML = '';
+            gridDestacados.innerHTML = '';
+
+            let contNovedades = 0, contPromociones = 0, contDestacados = 0;
+
+            // D) Dibujar y repartir
+            filtrados.forEach(item => {
+                const tarjetaHTML = crearCardHtml(item);
+                const seccion = item.seccion ? item.seccion.toLowerCase().trim() : '';
+
+                if (seccion === 'novedad') { gridNovedades.innerHTML += tarjetaHTML; contNovedades++; } 
+                else if (seccion === 'promocion') { gridPromociones.innerHTML += tarjetaHTML; contPromociones++; } 
+                else if (seccion === 'destacado') { gridDestacados.innerHTML += tarjetaHTML; contDestacados++; }
+            });
+
+            // E) Actualizar contadores
+            document.getElementById('count-novedades').innerText = `Mostrando: ${contNovedades}`;
+            document.getElementById('count-promociones').innerText = `Mostrando: ${contPromociones}`;
+            document.getElementById('count-destacados').innerText = `Mostrando: ${contDestacados}`;
+            
+            // Volver a aplicar filtro de búsqueda de texto si el usuario tenía algo escrito
+            buscarComercio();
+        }
+
+        // 5. CREADOR VISUAL DE TARJETAS (Plantilla HTML base de tu código original)
+        function crearCardHtml(item) {
+    let estrellasHtml = item.estrellas ? 
+        `<div class="flex text-yellow-400 text-xs mt-1">
+            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i>
+            <span class="text-gray-400 ml-1">(${item.estrellas})</span>
+         </div>` : '';
+
+    // 1. Lógica de Horario
+    const ahora = new Date().getHours();
+    const [apertura, cierre] = item.horario ? item.horario.split('-').map(h => parseInt(h)) : [0, 0];
+    const estaAbierto = ahora >= apertura && ahora < cierre;
+    
+    const estadoHtml = `
+        <span class="absolute top-3 left-3 px-2 py-1 rounded-md text-[10px] font-bold text-white uppercase tracking-wider ${estaAbierto ? 'bg-green-500' : 'bg-red-500'}">
+            ${estaAbierto ? 'Abierto' : 'Cerrado'}
+        </span>
+    `;
+
+    // 2. Lógica del botón
+    let botonHTML = '';
+    if (!item.urlApp || item.urlApp.trim() === '' || item.urlApp.trim() === '#') {
+        botonHTML = `
+            <button disabled class="w-full text-center border-2 border-dashed border-gray-300 text-gray-400 text-xs font-bold py-2.5 px-4 rounded-xl cursor-not-allowed transition-all mt-2">
+                <i class="fa-solid fa-person-digging mr-1"></i> Vitrina en Construcción
+            </button>`;
+    } else {
+        let linkFinal = item.urlApp.startsWith('http') ? item.urlApp : `comercio.html?id=${item.id}`;
+        let target = item.urlApp.startsWith('http') ? '_blank' : '_self';
+        
+        botonHTML = `
+            <a href="${linkFinal}" target="${target}" class="block w-full text-center bg-indigo-600 text-white text-xs font-bold py-2.5 px-4 rounded-xl hover:bg-indigo-700 shadow-sm transition-all mt-2">
+                Visitar Vitrina <i class="fa-solid fa-arrow-right ml-1"></i>
+            </a>`;
+    }
+
+    // 3. Render final
+    return `
+        <div class="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 flex flex-col justify-between group h-full">
+            <div class="relative overflow-hidden h-40 bg-gray-100">
+                ${estadoHtml}
+                <img src="${item.imagen}" alt="${item.nombre}" onerror="this.src='https://placehold.co/400x300?text=Sin+Imagen'" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                ${item.badge ? `<span class="absolute top-3 right-3 bg-slate-900/80 backdrop-blur-sm text-white text-[10px] font-bold tracking-wider px-2.5 py-1 rounded-md uppercase">${item.badge}</span>` : ''}
+            </div>
+            <div class="p-5 flex-1 flex flex-col justify-between space-y-3">
+                <div class="space-y-1.5">
+                    <div class="flex items-center gap-1.5 text-[10px] font-bold tracking-wide text-indigo-500 uppercase">
+                        <i class="fa-solid fa-circle-check text-emerald-400"></i> ${item.categoria}
+                    </div>
+                    <h3 class="font-extrabold text-slate-900 text-lg leading-tight">${item.nombre}</h3>
+                    <p class="text-gray-500 text-xs line-clamp-2 leading-relaxed">${item.descripcion}</p>
+                    ${estrellasHtml}
+                </div>
+                ${botonHTML}
+            </div>
+        </div>
+    `;
+}
+
+        // 6. BUSCADOR EN VIVO
+        function buscarComercio() {
+            const input = document.getElementById('searchInput').value.toLowerCase();
+            const tarjetas = document.querySelectorAll('#grid-novedades > div, #grid-promociones > div, #grid-destacados > div');
+
+            tarjetas.forEach(tarjeta => {
+                const texto = tarjeta.innerText.toLowerCase();
+                tarjeta.style.display = texto.includes(input) ? "flex" : "none";
+            });
+        }
+
+        // 7. FUNCIONES DE BOTONES DE CATEGORÍA Y ORDEN
+        function filtrarCategoria(categoria) {
+            categoriaActual = categoria;
+            const botones = document.querySelectorAll('.cat-btn');
+            botones.forEach(btn => {
+                if (btn.innerText.includes(categoria)) {
+                    btn.classList.remove('bg-white', 'text-gray-600', 'border-gray-200');
+                    btn.classList.add('bg-indigo-900', 'text-white', 'border-transparent', 'shadow-sm');
+                } else {
+                    btn.classList.remove('bg-indigo-900', 'text-white', 'border-transparent', 'shadow-sm');
+                    btn.classList.add('bg-white', 'text-gray-600', 'border-gray-200');
+                }
+            });
+            renderizarDirectorio();
+        }
+
+        function cambiarOrdenamiento() {
+            ordenActual = document.getElementById('sortSelect').value;
+            renderizarDirectorio();
+        }
+
+        // 8. RENDERIZADO DE CRÓNICAS Y MODAL
+        function renderizarCronicas(cronicas) {
+            const grid = document.getElementById('blog-grid');
+            grid.innerHTML = ""; 
+
+            if(cronicas.length === 0) {
+                grid.innerHTML = `<p class="col-span-full text-center text-gray-400 text-sm py-8"><i class="fa-solid fa-seedling text-xl mb-2 block"></i> Próximamente nuevas historias de Inírida...</p>`;
+                return;
+            }
+
+            cronicas.forEach((cro, index) => {
+                grid.innerHTML += `
+                    <div onclick="abrirModalCronica(${index})" class="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl border border-gray-100 transition-all cursor-pointer group flex flex-col h-full">
+                        <div class="relative h-48 overflow-hidden bg-gray-100">
+                            <img src="${cro.foto_1}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                            <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 to-transparent"></div>
+                            <span class="absolute bottom-3 left-3 text-[10px] font-bold text-white uppercase tracking-wider bg-indigo-600 px-2 py-1 rounded shadow-md">${cro.categoria}</span>
+                        </div>
+                        <div class="p-5 flex-1 flex flex-col justify-between">
+                            <div>
+                                <h3 class="text-base font-extrabold text-slate-900 mb-2 leading-tight">${cro.titulo}</h3>
+                                <p class="text-xs text-gray-500 line-clamp-3 leading-relaxed">${cro.contenido}</p>
+                            </div>
+                            <span class="text-indigo-600 text-xs font-bold flex items-center gap-1 mt-4 group-hover:translate-x-1 transition-transform">
+                                Leer historia completa <i class="fa-solid fa-arrow-right"></i>
+                            </span>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function abrirModalCronica(index) {
+            const cro = listaCronicasGlobal[index];
+            const modal = document.getElementById('cronicaModal');
+            const body = document.getElementById('modalBody');
+            
+            let fotos = [cro.foto_1, cro.foto_2, cro.foto_3, cro.foto_4].filter(f => f && f.trim() !== "");
+            let galeriaHtml = "";
+            
+            if(fotos.length === 1) {
+                galeriaHtml = `<img src="${fotos[0]}" class="w-full h-64 md:h-96 object-cover">`;
+            } else if (fotos.length > 1) {
+                galeriaHtml = `<div class="grid grid-cols-1 sm:grid-cols-2 gap-1">`;
+                fotos.forEach(f => { galeriaHtml += `<img src="${f}" class="w-full h-48 md:h-64 object-cover">`; });
+                galeriaHtml += `</div>`;
+            }
+
+            let parrafos = cro.contenido.split('\n').map(p => p.trim()).filter(p => p !== '').map(p => `<p class="mb-4">${p}</p>`).join('');
+
+            body.innerHTML = `
+                ${galeriaHtml}
+                <div class="p-6 md:p-10">
+                    <span class="text-xs font-bold text-indigo-600 uppercase tracking-widest">${cro.categoria}</span>
+                    <h2 class="text-2xl md:text-4xl font-extrabold text-slate-900 mt-2 mb-2 leading-tight">${cro.titulo}</h2>
+                    <p class="text-xs text-gray-400 mb-8 font-semibold"><i class="fa-regular fa-calendar mr-1"></i> Publicado: ${cro.fecha || 'Reciente'}</p>
+                    <div class="text-slate-600 text-sm md:text-base leading-relaxed text-justify">${parrafos}</div>
+                </div>
+            `;
+            
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                document.getElementById('cronicaContent').classList.remove('scale-95');
+            }, 10);
+            document.body.style.overflow = 'hidden'; 
+        }
+
+        function cerrarModalCronica() {
+            const modal = document.getElementById('cronicaModal');
+            modal.classList.add('opacity-0');
+            document.getElementById('cronicaContent').classList.add('scale-95');
+            setTimeout(() => { modal.classList.add('hidden'); }, 300);
+            document.body.style.overflow = 'auto'; 
+        }
+
+        // 9. FORMULARIO WHATSAPP (Original tuyo)
+        function enviarFormularioWhatsApp(event) {
+            event.preventDefault();
+            const nombre = document.getElementById('formNombre').value;
+            const celular = document.getElementById('formCelular').value;
+            const empresa = document.getElementById('formEmpresa').value;
+            const descripcion = document.getElementById('formDescripcion').value;
+
+            const mensaje = `Hola, me gustaría publicar en este directorio web.%0A%0A*Nombre:* ${nombre}%0A*Celular:* ${celular}%0A*Empresa:* ${empresa}%0A*De qué se trata:* ${descripcion}`;
+            window.open(`https://wa.me/573102881717?text=${mensaje}`, '_blank');
+        }
+
+        // ARRANQUE DE LA APP
+        document.addEventListener('DOMContentLoaded', cargarDirectorioVivo);
+
+    </script>
+</body>
+</html>

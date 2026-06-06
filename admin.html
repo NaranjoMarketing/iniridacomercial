@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CMS | Redactor Inírida</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style> input[type="file"] { display: none; } </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen p-4 sm:p-8 font-sans pb-10 flex items-center justify-center">
+
+    <!-- Contenedor Responsivo: max-w-3xl permite que se vea amplio en PC -->
+    <div class="w-full max-w-3xl bg-slate-800 rounded-2xl shadow-2xl border border-slate-700 overflow-hidden">
+        <div class="bg-indigo-600 p-5 flex items-center justify-between">
+            <h1 class="text-xl font-extrabold text-white tracking-tight"><i class="fa-solid fa-pen-nib mr-2"></i>Gestor de Crónicas</h1>
+            <span class="bg-indigo-900/50 text-indigo-100 text-xs font-bold px-3 py-1 rounded-full">Modo Admin</span>
+        </div>
+
+        <form id="formCronica" onsubmit="publicarCronica(event)" class="p-6 space-y-6">
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Título -->
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Título de la historia</label>
+                    <input type="text" id="titulo" required placeholder="Ej: Atardecer en Maviso..." class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-indigo-500 text-sm transition-colors">
+                </div>
+
+                <!-- Categoría -->
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Categoría</label>
+                    <select id="categoria" required class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-indigo-500 text-sm transition-colors">
+                        <option value="Crónica Destacada">Crónica Destacada</option>
+                        <option value="Turismo">Turismo</option>
+                        <option value="Gastronomía">Gastronomía</option>
+                        <option value="Consejos Comerciales">Consejos Comerciales</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Grilla de 4 Fotos Responsiva (2 en móvil, 4 en PC) -->
+            <div>
+                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Fotografías (Sube hasta 4)</label>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <label class="flex flex-col items-center justify-center h-28 border-2 border-indigo-500/30 border-dashed rounded-xl cursor-pointer hover:bg-slate-700/50 transition-all">
+                        <i class="fa-solid fa-camera text-2xl text-indigo-400 mb-2" id="icono_0"></i>
+                        <span class="text-[10px] text-slate-300 font-bold" id="texto_0">Portada (1)</span>
+                        <input type="file" accept="image/*" onchange="procesarFoto(this, 0)">
+                    </label>
+                    <label class="flex flex-col items-center justify-center h-28 border-2 border-slate-600 border-dashed rounded-xl cursor-pointer hover:bg-slate-700/50 transition-all">
+                        <i class="fa-solid fa-image text-2xl text-slate-500 mb-2" id="icono_1"></i>
+                        <span class="text-[10px] text-slate-400 font-bold" id="texto_1">Foto 2</span>
+                        <input type="file" accept="image/*" onchange="procesarFoto(this, 1)">
+                    </label>
+                    <label class="flex flex-col items-center justify-center h-28 border-2 border-slate-600 border-dashed rounded-xl cursor-pointer hover:bg-slate-700/50 transition-all">
+                        <i class="fa-solid fa-image text-2xl text-slate-500 mb-2" id="icono_2"></i>
+                        <span class="text-[10px] text-slate-400 font-bold" id="texto_2">Foto 3</span>
+                        <input type="file" accept="image/*" onchange="procesarFoto(this, 2)">
+                    </label>
+                    <label class="flex flex-col items-center justify-center h-28 border-2 border-slate-600 border-dashed rounded-xl cursor-pointer hover:bg-slate-700/50 transition-all">
+                        <i class="fa-solid fa-image text-2xl text-slate-500 mb-2" id="icono_3"></i>
+                        <span class="text-[10px] text-slate-400 font-bold" id="texto_3">Foto 4</span>
+                        <input type="file" accept="image/*" onchange="procesarFoto(this, 3)">
+                    </label>
+                </div>
+            </div>
+
+            <!-- Contenido -->
+            <div>
+                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Contenido de la crónica</label>
+                <textarea id="contenido" required rows="7" placeholder="Escribe el texto aquí..." class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-indigo-500 text-sm resize-none transition-colors"></textarea>
+            </div>
+
+            <!-- Panel de Acción: Estado y Botón -->
+            <div class="flex flex-col md:flex-row gap-4 items-end bg-slate-900/50 p-4 rounded-xl border border-slate-700/50">
+                <div class="w-full md:w-1/2">
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Visibilidad</label>
+                    <select id="estado" class="w-full bg-slate-800 border border-slate-600 rounded-lg px-4 py-3 text-emerald-400 font-bold focus:outline-none focus:border-emerald-500 text-sm">
+                        <option value="Activo">🟢 Publicar (Visible en web)</option>
+                        <option value="Oculto" class="text-slate-400">🔴 Guardar Oculto (Borrador)</option>
+                    </select>
+                </div>
+                <div class="w-full md:w-1/2">
+                    <button type="submit" id="btnPublicar" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 px-4 rounded-lg shadow-lg flex items-center justify-center gap-2 transition-all">
+                        <i class="fa-solid fa-cloud-arrow-up"></i> Guardar en Base de Datos
+                    </button>
+                </div>
+            </div>
+            
+            <div id="mensajeEstado" class="text-center text-sm font-bold hidden"></div>
+        </form>
+    </div>
+
+    <script>
+        // ¡RECUERDA PEGAR AQUÍ TU URL DE APPS SCRIPT!
+        const SCRIPT_URL = 'TU_URL_DE_APPS_SCRIPT_AQUI'; 
+        let fotosBase64 = ["", "", "", ""]; 
+
+        function procesarFoto(input, indice) {
+            const texto = document.getElementById(`texto_${indice}`);
+            const icono = document.getElementById(`icono_${indice}`);
+            
+            if (input.files && input.files[0]) {
+                texto.innerText = "¡Cargada!";
+                texto.classList.replace("text-slate-400", "text-emerald-400");
+                texto.classList.replace("text-slate-300", "text-emerald-400");
+                icono.classList.replace("fa-camera", "fa-check-circle");
+                icono.classList.replace("fa-image", "fa-check-circle");
+                icono.className = "fa-solid fa-check-circle text-2xl text-emerald-400 mb-2";
+                
+                const lector = new FileReader();
+                lector.onload = function(e) { fotosBase64[indice] = e.target.result; };
+                lector.readAsDataURL(input.files[0]);
+            }
+        }
+
+        async function publicarCronica(event) {
+            event.preventDefault();
+            const btn = document.getElementById('btnPublicar');
+            const msj = document.getElementById('mensajeEstado');
+            
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Procesando...';
+            btn.disabled = true;
+            btn.classList.replace('bg-indigo-600', 'bg-slate-600');
+
+            const datos = {
+                accion: "publicar_cronica",
+                titulo: document.getElementById('titulo').value,
+                categoria: document.getElementById('categoria').value,
+                contenido: document.getElementById('contenido').value,
+                estado: document.getElementById('estado').value,
+                fotos: fotosBase64 
+            };
+
+            try {
+                const respuesta = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(datos) });
+                const resultado = await respuesta.json();
+                
+                if(resultado.resultado === 'ok') {
+                    msj.innerText = "¡Guardada con éxito! ✅";
+                    msj.className = "text-center text-sm font-bold mt-2 text-emerald-400 block";
+                    document.getElementById('formCronica').reset();
+                    
+                    fotosBase64 = ["", "", "", ""];
+                    for(let i=0; i<4; i++) {
+                        document.getElementById(`texto_${i}`).innerText = i===0 ? "Portada (1)" : `Foto ${i+1}`;
+                        document.getElementById(`texto_${i}`).className = i===0 ? "text-[10px] text-slate-300 font-bold" : "text-[10px] text-slate-400 font-bold";
+                        document.getElementById(`icono_${i}`).className = `fa-solid ${i===0 ? 'fa-camera text-indigo-400' : 'fa-image text-slate-500'} text-2xl mb-2`;
+                    }
+                }
+            } catch (error) {
+                msj.innerText = "Error. Verifica tu conexión.";
+                msj.className = "text-center text-sm font-bold mt-2 text-red-400 block";
+            } finally {
+                setTimeout(() => {
+                    btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i> Guardar en Base de Datos';
+                    btn.disabled = false;
+                    btn.classList.replace('bg-slate-600', 'bg-indigo-600');
+                    setTimeout(() => { msj.classList.add('hidden'); }, 4000);
+                }, 1000);
+            }
+        }
+    </script>
+</body>
+</html>

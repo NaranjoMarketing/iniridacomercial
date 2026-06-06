@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vitrina Comercial</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <!-- Cargando -->
+    <div id="loader" class="flex flex-col items-center justify-center min-h-screen">
+        <i class="fa-solid fa-spinner fa-spin text-4xl text-indigo-600 mb-4"></i>
+        <p class="font-bold">Cargando vitrina...</p>
+    </div>
+
+    <!-- Contenido Maestro -->
+    <div id="contenido-maestro" class="hidden">
+        <div class="h-64 md:h-80 w-full overflow-hidden">
+            <img id="img-negocio" src="" class="w-full h-full object-cover">
+        </div>
+
+        <main class="max-w-3xl mx-auto px-6 -mt-16 pb-16">
+            <div class="bg-white rounded-3xl shadow-xl p-8 border border-gray-100">
+                <div class="flex items-start justify-between">
+                    <div>
+                        <span id="cat-negocio" class="text-xs font-bold text-indigo-600 uppercase tracking-widest bg-indigo-50 px-3 py-1 rounded-full"></span>
+                        <h1 id="nom-negocio" class="text-3xl md:text-4xl font-extrabold mt-2 text-slate-900"></h1>
+                    </div>
+                </div>
+
+                <p id="desc-negocio" class="text-gray-600 mt-6 leading-relaxed text-lg"></p>
+
+                <div class="mt-8 pt-8 border-t border-gray-100 grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <a id="btn-whatsapp" href="#" target="_blank" class="flex items-center justify-center gap-3 bg-emerald-600 text-white font-bold py-4 rounded-2xl hover:bg-emerald-700 transition-all">
+                        <i class="fa-brands fa-whatsapp text-2xl"></i> Contactar por WhatsApp
+                    </a>
+                    <a href="index.html" class="flex items-center justify-center gap-2 bg-gray-100 text-gray-700 font-bold py-4 rounded-2xl hover:bg-gray-200 transition-all">
+                        <i class="fa-solid fa-arrow-left"></i> Volver al Directorio
+                    </a>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzvYrJbxWr8NWBP63ChL6qtF_qKX5IQtBzHXokpqTlWCKJ7rPA06yATAdC8_qr1Dcbl/exec';
+
+        async function cargarVitrina() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const idNegocio = urlParams.get('id');
+
+            if (!idNegocio) return window.location.href = 'index.html';
+
+            try {
+                const res = await fetch(SCRIPT_URL);
+                const datos = await res.json();
+                const negocio = datos.comercios.find(c => c.id == idNegocio);
+                
+                if (negocio) {
+                    document.getElementById('nom-negocio').innerText = negocio.nombre;
+                    document.getElementById('cat-negocio').innerText = negocio.categoria;
+                    document.getElementById('desc-negocio').innerText = negocio.descripcion;
+                    document.getElementById('img-negocio').src = negocio.imagen;
+                    document.getElementById('btn-whatsapp').href = `https://wa.me/573102881717?text=Hola, vengo del directorio Inírida Comercial y me interesa: ${negocio.nombre}`;
+                    
+                    // Lógica de Abierto/Cerrado
+                    const indicador = document.createElement('div');
+                    indicador.className = "mt-4 font-bold text-sm px-4 py-2 rounded-lg inline-block";
+
+                    try {
+                        const partes = negocio.horario.split('-');
+                        const horaApertura = parseInt(partes[0].split(':')[0]);
+                        const horaCierre = parseInt(partes[1].split(':')[0]);
+                        const horaActual = new Date().getHours();
+
+                        if (horaActual >= horaApertura && horaActual < horaCierre) {
+                            indicador.innerText = "🟢 Abierto ahora";
+                            indicador.classList.add("bg-green-100", "text-green-700");
+                        } else {
+                            indicador.innerText = "🔴 Cerrado";
+                            indicador.classList.add("bg-red-100", "text-red-700");
+                        }
+                    } catch (e) {
+                        indicador.innerText = "Horario no disponible";
+                        indicador.classList.add("bg-gray-100", "text-gray-600");
+                    }
+                    document.getElementById('nom-negocio').after(indicador);
+                    
+                    document.getElementById('loader').classList.add('hidden');
+                    document.getElementById('contenido-maestro').classList.remove('hidden');
+                } else {
+                    alert("Negocio no encontrado");
+                    window.location.href = 'index.html';
+                }
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', cargarVitrina);
+    </script>
+</body>
+</html>
