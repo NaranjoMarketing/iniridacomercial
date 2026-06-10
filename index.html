@@ -201,9 +201,9 @@
                 const respuesta = await fetch(SCRIPT_URL);
                 const datos = await respuesta.json(); 
                 
-                // Comercios
+                // Comercios: Eliminado el filtro restrictivo para permitir que entren los registros "Inactivo"
                 if(datos.comercios) {
-                    listaComerciosGlobal = datos.comercios.filter(item => item.estado_pago && item.estado_pago.toLowerCase() === 'activo');
+                    listaComerciosGlobal = datos.comercios;
                     renderizarDirectorio(); 
                 }
 
@@ -221,7 +221,7 @@
             }
         }
 
-        // 4. FILTROS Y RENDER DE COMERCIOS (¡Tu lógica original restaurada!)
+        // 4. FILTROS Y RENDER DE COMERCIOS (Estructura arquitectónica intacta)
         function renderizarDirectorio() {
             // A) Aplicar Filtro de Categoría
             let filtrados = listaComerciosGlobal;
@@ -254,7 +254,8 @@
             // D) Dibujar y repartir
             filtrados.forEach(item => {
                 const tarjetaHTML = crearCardHtml(item);
-                const seccion = item.seccion ? item.seccion.toLowerCase().trim() : '';
+                // Si viene sin sección asignada en la base de datos (como los gratuitos), se manda a destacado por defecto para que sea visible
+                const seccion = item.seccion ? item.seccion.toLowerCase().trim() : 'destacado';
 
                 if (seccion === 'novedad') { gridNovedades.innerHTML += tarjetaHTML; contNovedades++; } 
                 else if (seccion === 'promocion') { gridPromociones.innerHTML += tarjetaHTML; contPromociones++; } 
@@ -266,68 +267,96 @@
             document.getElementById('count-promociones').innerText = `Mostrando: ${contPromociones}`;
             document.getElementById('count-destacados').innerText = `Mostrando: ${contDestacados}`;
             
-            // Volver a aplicar filtro de búsqueda de texto si el usuario tenía algo escrito
             buscarComercio();
         }
 
-        // 5. CREADOR VISUAL DE TARJETAS (Plantilla HTML base de tu código original)
+        // 5. CREADOR VISUAL DE TARJETAS (Actualizado con lógica de conversión y dirección inteligente)
         function crearCardHtml(item) {
-    let estrellasHtml = item.estrellas ? 
-        `<div class="flex text-yellow-400 text-xs mt-1">
-            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i>
-            <span class="text-gray-400 ml-1">(${item.estrellas})</span>
-         </div>` : '';
+            const esActivo = item.estado_pago && item.estado_pago.toLowerCase() === 'activo';
 
-    // 1. Lógica de Horario
-    const ahora = new Date().getHours();
-    const [apertura, cierre] = item.horario ? item.horario.split('-').map(h => parseInt(h)) : [0, 0];
-    const estaAbierto = ahora >= apertura && ahora < cierre;
-    
-    const estadoHtml = `
-        <span class="absolute top-3 left-3 px-2 py-1 rounded-md text-[10px] font-bold text-white uppercase tracking-wider ${estaAbierto ? 'bg-green-500' : 'bg-red-500'}">
-            ${estaAbierto ? 'Abierto' : 'Cerrado'}
-        </span>
-    `;
+            let estrellasHtml = item.estrellas ? 
+                `<div class="flex text-yellow-400 text-xs mt-1">
+                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i>
+                    <span class="text-gray-400 ml-1">(${item.estrellas})</span>
+                 </div>` : '';
 
-    // 2. Lógica del botón
-    let botonHTML = '';
-    if (!item.urlApp || item.urlApp.trim() === '' || item.urlApp.trim() === '#') {
-        botonHTML = `
-            <button disabled class="w-full text-center border-2 border-dashed border-gray-300 text-gray-400 text-xs font-bold py-2.5 px-4 rounded-xl cursor-not-allowed transition-all mt-2">
-                <i class="fa-solid fa-person-digging mr-1"></i> Vitrina en Construcción
-            </button>`;
-    } else {
-        let linkFinal = item.urlApp.startsWith('http') ? item.urlApp : `comercio.html?id=${item.id}`;
-        let target = item.urlApp.startsWith('http') ? '_blank' : '_self';
-        
-        botonHTML = `
-            <a href="${linkFinal}" target="${target}" class="block w-full text-center bg-indigo-600 text-white text-xs font-bold py-2.5 px-4 rounded-xl hover:bg-indigo-700 shadow-sm transition-all mt-2">
-                Visitar Vitrina <i class="fa-solid fa-arrow-right ml-1"></i>
-            </a>`;
-    }
+            // Lógica de Horario adaptativa (Funciona con cabecera singular o plural en la Sheet)
+            const ahora = new Date().getHours();
+            const campoHorario = item.horario || item.horarios || '';
+            const [apertura, cierre] = campoHorario ? campoHorario.split('-').map(h => parseInt(h)) : [0, 0];
+            const estaAbierto = ahora >= apertura && ahora < cierre;
+            
+            const estadoHtml = `
+                <span class="absolute top-3 left-3 px-2 py-1 rounded-md text-[10px] font-bold text-white uppercase tracking-wider ${estaAbierto ? 'bg-green-500' : 'bg-red-500'}">
+                    ${estaAbierto ? 'Abierto' : 'Cerrado'}
+                </span>
+            `;
 
-    // 3. Render final
-    return `
-        <div class="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 flex flex-col justify-between group h-full">
-            <div class="relative overflow-hidden h-40 bg-gray-100">
-                ${estadoHtml}
-                <img src="${item.imagen}" alt="${item.nombre}" onerror="this.src='https://placehold.co/400x300?text=Sin+Imagen'" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
-                ${item.badge ? `<span class="absolute top-3 right-3 bg-slate-900/80 backdrop-blur-sm text-white text-[10px] font-bold tracking-wider px-2.5 py-1 rounded-md uppercase">${item.badge}</span>` : ''}
-            </div>
-            <div class="p-5 flex-1 flex flex-col justify-between space-y-3">
-                <div class="space-y-1.5">
-                    <div class="flex items-center gap-1.5 text-[10px] font-bold tracking-wide text-indigo-500 uppercase">
-                        <i class="fa-solid fa-circle-check text-emerald-400"></i> ${item.categoria}
+            // Lógica de dirección adaptativa (Funciona con cabecera direccion o dirección con tilde)
+            const textoDireccion = item.direccion || item.dirección || 'Inírida, Guainía';
+
+            // Lógica del botón y diseño según Estado de Pago
+            let botonHTML = '';
+            let estiloTarjeta = '';
+            let iconoVerificacion = '';
+
+            if (!esActivo) {
+                // Tarjetas Gratuitas / Inactivas: Tono elegante sutil y botón dinámico que asienta el valor en el formulario
+                estiloTarjeta = "bg-slate-50/90 border-slate-200 opacity-95";
+                iconoVerificacion = `<i class="fa-solid fa-location-dot text-slate-400"></i>`;
+                
+                botonHTML = `
+                    <a href="#contacto-section" onclick="document.getElementById('formEmpresa').value = '${item.nombre.replace(/'/g, "\\'")}'" class="block w-full text-center border-2 border-dashed border-indigo-400 hover:border-indigo-600 text-indigo-600 hover:bg-indigo-50/50 text-xs font-bold py-2.5 px-4 rounded-xl shadow-sm transition-all mt-2">
+                        ¿Eres el dueño? Actívalo aquí <i class="fa-solid fa-arrow-down ml-1"></i>
+                    </a>`;
+            } else {
+                // Tarjetas Premium / Activas
+                estiloTarjeta = "bg-white border-gray-100";
+                iconoVerificacion = `<i class="fa-solid fa-circle-check text-emerald-400"></i>`;
+                
+                if (!item.urlApp || item.urlApp.trim() === '' || item.urlApp.trim() === '#') {
+                    botonHTML = `
+                        <button disabled class="w-full text-center border-2 border-dashed border-gray-300 text-gray-400 text-xs font-bold py-2.5 px-4 rounded-xl cursor-not-allowed transition-all mt-2">
+                            <i class="fa-solid fa-person-digging mr-1"></i> Vitrina en Construcción
+                        </button>`;
+                } else {
+                    let linkFinal = item.urlApp.startsWith('http') ? item.urlApp : `comercio.html?id=${item.id}`;
+                    let target = item.urlApp.startsWith('http') ? '_blank' : '_self';
+                    
+                    botonHTML = `
+                        <a href="${linkFinal}" target="${target}" class="block w-full text-center bg-indigo-600 text-white text-xs font-bold py-2.5 px-4 rounded-xl hover:bg-indigo-700 shadow-sm transition-all mt-2">
+                            Visitar Vitrina <i class="fa-solid fa-arrow-right ml-1"></i>
+                        </a>`;
+                }
+            }
+
+            // Render final manteniendo perfectamente tu diseño estético original
+            return `
+                <div class="${estiloTarjeta} rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border flex flex-col justify-between group h-full">
+                    <div class="relative overflow-hidden h-40 bg-gray-100">
+                        ${estadoHtml}
+                        <img src="${item.imagen}" alt="${item.nombre}" onerror="this.src='https://placehold.co/400x300?text=Sin+Imagen'" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                        ${item.badge ? `<span class="absolute top-3 right-3 bg-slate-900/80 backdrop-blur-sm text-white text-[10px] font-bold tracking-wider px-2.5 py-1 rounded-md uppercase">${item.badge}</span>` : ''}
                     </div>
-                    <h3 class="font-extrabold text-slate-900 text-lg leading-tight">${item.nombre}</h3>
-                    <p class="text-gray-500 text-xs line-clamp-2 leading-relaxed">${item.descripcion}</p>
-                    ${estrellasHtml}
+                    <div class="p-5 flex-1 flex flex-col justify-between space-y-3">
+                        <div class="space-y-1.5">
+                            <div class="flex items-center gap-1.5 text-[10px] font-bold tracking-wide text-indigo-500 uppercase">
+                                ${iconoVerificacion} ${item.categoria}
+                            </div>
+                            <h3 class="font-extrabold text-slate-900 text-lg leading-tight">${item.nombre}</h3>
+                            
+                            <div class="flex items-center text-gray-500 text-[11px] font-medium">
+                                <i class="fa-solid fa-location-dot mr-1 text-red-400"></i> ${textoDireccion}
+                            </div>
+
+                            <p class="text-gray-500 text-xs line-clamp-2 leading-relaxed">${item.descripcion}</p>
+                            ${estrellasHtml}
+                        </div>
+                        ${botonHTML}
+                    </div>
                 </div>
-                ${botonHTML}
-            </div>
-        </div>
-    `;
-}
+            `;
+        }
 
         // 6. BUSCADOR EN VIVO
         function buscarComercio() {
@@ -429,6 +458,7 @@
             document.body.style.overflow = 'hidden'; 
         }
 
+        // Cerramiento modal
         function cerrarModalCronica() {
             const modal = document.getElementById('cronicaModal');
             modal.classList.add('opacity-0');
@@ -437,7 +467,7 @@
             document.body.style.overflow = 'auto'; 
         }
 
-        // 9. FORMULARIO WHATSAPP (Original tuyo)
+        // 9. FORMULARIO WHATSAPP (Original)
         function enviarFormularioWhatsApp(event) {
             event.preventDefault();
             const nombre = document.getElementById('formNombre').value;
