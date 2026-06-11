@@ -11,12 +11,21 @@
         body { font-family: 'Poppins', sans-serif; }
         /* Efecto Parallax Puro */
         .parallax-hero {
-            background-image: linear-gradient(rgba(15, 23, 42, 0.65), rgba(15, 23, 42, 0.85)), url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1920&q=80');
+            background-image: linear-gradient(rgba(15, 23, 42, 0.65), rgba(15, 23, 42, 0.85)), url('https://i.postimg.cc/sxPNGWrP/sitio5.png');
             background-attachment: fixed;
             background-position: center;
             background-repeat: no-repeat;
             background-size: cover;
         }
+        
+        /* Optimización de la imagen del banner para dispositivos móviles */
+        @media (max-width: 768px) {
+            .parallax-hero {
+                background-attachment: scroll;
+                background-position: center top;
+            }
+        }
+
         /* Ocultar barra de scroll en contenedores horizontales */
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
@@ -48,34 +57,81 @@
     </header>
 
     <section class="max-w-7xl mx-auto px-4 py-8 -mt-8 relative z-10">
-        <div class="bg-white rounded-2xl shadow-md p-6 border border-gray-100 flex flex-col md:flex-row md:items-center justify-between gap-6">
-            <div class="w-full md:w-3/4">
+        <div class="bg-white rounded-2xl shadow-md p-6 border border-gray-100 flex flex-col gap-6">
+            
+            <!-- Fila de Categorías con flechas de desplazamiento -->
+            <div class="w-full relative">
                 <h2 class="text-xs font-bold tracking-wider text-slate-400 uppercase mb-4">Explorar por Categoría</h2>
-                <div class="flex overflow-x-auto gap-3 pb-2 no-scrollbar scroll-smooth" id="categoriesContainer">
-                    <button onclick="filtrarCategoria('Todos')" class="cat-btn bg-indigo-900 text-white border border-transparent px-5 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-2 whitespace-nowrap shadow-sm transition-all">✨ Todos</button>
-                    <button onclick="filtrarCategoria('Almuerzos')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-5 py-2.5 rounded-xl text-sm font-medium flex items-center gap-2 whitespace-nowrap hover:bg-gray-50 transition-all">🍲 Almuerzos</button>
-                    <button onclick="filtrarCategoria('Restaurantes')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-5 py-2.5 rounded-xl text-sm font-medium flex items-center gap-2 whitespace-nowrap hover:bg-gray-50 transition-all">🍔 Restaurantes</button>
-                    <button onclick="filtrarCategoria('Salud / Citas')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-5 py-2.5 rounded-xl text-sm font-medium flex items-center gap-2 whitespace-nowrap hover:bg-gray-50 transition-all">🩺 Salud / Citas</button>
-                    <button onclick="filtrarCategoria('Licores')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-5 py-2.5 rounded-xl text-sm font-medium flex items-center gap-2 whitespace-nowrap hover:bg-gray-50 transition-all">🍻 Licores</button>
-                    <button onclick="filtrarCategoria('Comercio')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-5 py-2.5 rounded-xl text-sm font-medium flex items-center gap-2 whitespace-nowrap hover:bg-gray-50 transition-all">🏪 Comercio</button>
-                    <button onclick="filtrarCategoria('Servicios')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-5 py-2.5 rounded-xl text-sm font-medium flex items-center gap-2 whitespace-nowrap hover:bg-gray-50 transition-all">🛠️ Servicios</button>
-                    <button onclick="filtrarCategoria('Hoteles')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-5 py-2.5 rounded-xl text-sm font-medium flex items-center gap-2 whitespace-nowrap hover:bg-gray-50 transition-all">🏨 Hoteles</button>
+                
+                <div class="relative flex items-center">
+                    <!-- Flecha Izquierda -->
+                    <button onclick="scrollCategories('left')" class="absolute left-0 z-10 flex items-center justify-center w-9 h-9 bg-white/90 backdrop-blur-sm border border-gray-200 rounded-full shadow-md text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 -ml-3 transition-all focus:outline-none">
+                        <i class="fa-solid fa-chevron-left"></i>
+                    </button>
+
+                    <!-- Contenedor scrolleable -->
+                    <div class="flex overflow-x-auto gap-3 pb-2 no-scrollbar scroll-smooth w-full px-6" id="categoriesContainer">
+                        <button onclick="filtrarCategoria('Todos')" class="cat-btn bg-indigo-900 text-white border border-transparent px-5 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-2 whitespace-nowrap shadow-sm transition-all">✨ Todos</button>
+                        <button onclick="filtrarCategoria('Almuerzos')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-5 py-2.5 rounded-xl text-sm font-medium flex items-center gap-2 whitespace-nowrap hover:bg-gray-50 transition-all">🍲 Almuerzos</button>
+                        <button onclick="filtrarCategoria('Restaurantes')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-5 py-2.5 rounded-xl text-sm font-medium flex items-center gap-2 whitespace-nowrap hover:bg-gray-50 transition-all">🍔 Restaurantes</button>
+                        <button onclick="filtrarCategoria('Salud / Citas')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-5 py-2.5 rounded-xl text-sm font-medium flex items-center gap-2 whitespace-nowrap hover:bg-gray-50 transition-all">🩺 Salud / Citas</button>
+                        <button onclick="filtrarCategoria('Licores')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-5 py-2.5 rounded-xl text-sm font-medium flex items-center gap-2 whitespace-nowrap hover:bg-gray-50 transition-all">🍻 Licores</button>
+                        <button onclick="filtrarCategoria('Comercio')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-5 py-2.5 rounded-xl text-sm font-medium flex items-center gap-2 whitespace-nowrap hover:bg-gray-50 transition-all">🏪 Comercio</button>
+                        <button onclick="filtrarCategoria('Servicios')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-5 py-2.5 rounded-xl text-sm font-medium flex items-center gap-2 whitespace-nowrap hover:bg-gray-50 transition-all">🛠️ Servicios</button>
+                        <button onclick="filtrarCategoria('Hoteles')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-5 py-2.5 rounded-xl text-sm font-medium flex items-center gap-2 whitespace-nowrap hover:bg-gray-50 transition-all">🏨 Hoteles</button>
+                        <button onclick="filtrarCategoria('Cafetería/Heladería')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-5 py-2.5 rounded-xl text-sm font-medium flex items-center gap-2 whitespace-nowrap hover:bg-gray-50 transition-all">☕ Cafetería/Heladería</button>
+                        <button onclick="filtrarCategoria('Bares')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-5 py-2.5 rounded-xl text-sm font-medium flex items-center gap-2 whitespace-nowrap hover:bg-gray-50 transition-all">🍸 Bares</button>
+                        <button onclick="filtrarCategoria('Mercado')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-5 py-2.5 rounded-xl text-sm font-medium flex items-center gap-2 whitespace-nowrap hover:bg-gray-50 transition-all">🛒 Mercado</button>
+                        <button onclick="filtrarCategoria('Billares')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-5 py-2.5 rounded-xl text-sm font-medium flex items-center gap-2 whitespace-nowrap hover:bg-gray-50 transition-all">🎱 Billares</button>
+                        <button onclick="filtrarCategoria('Veterinarias')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-5 py-2.5 rounded-xl text-sm font-medium flex items-center gap-2 whitespace-nowrap hover:bg-gray-50 transition-all">🐾 Veterinarias</button>
+                        <button onclick="filtrarCategoria('AgroCampo')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-5 py-2.5 rounded-xl text-sm font-medium flex items-center gap-2 whitespace-nowrap hover:bg-gray-50 transition-all">🌾 AgroCampo</button>
+                        <button onclick="filtrarCategoria('Ópticas')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-5 py-2.5 rounded-xl text-sm font-medium flex items-center gap-2 whitespace-nowrap hover:bg-gray-50 transition-all">👓 Ópticas</button>
+                        <button onclick="filtrarCategoria('Transporte')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-5 py-2.5 rounded-xl text-sm font-medium flex items-center gap-2 whitespace-nowrap hover:bg-gray-50 transition-all">🚕 Transporte</button>
+                        <button onclick="filtrarCategoria('Depósitos')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-5 py-2.5 rounded-xl text-sm font-medium flex items-center gap-2 whitespace-nowrap hover:bg-gray-50 transition-all">📦 Depósitos</button>
+                        <button onclick="filtrarCategoria('Artesanías')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-5 py-2.5 rounded-xl text-sm font-medium flex items-center gap-2 whitespace-nowrap hover:bg-gray-50 transition-all">🏺 Artesanías</button>
+                        <button onclick="filtrarCategoria('Agencias de Viaje')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-5 py-2.5 rounded-xl text-sm font-medium flex items-center gap-2 whitespace-nowrap hover:bg-gray-50 transition-all">✈️ Agencias de Viaje</button>
+                        <button onclick="filtrarCategoria('Salón de Belleza')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-5 py-2.5 rounded-xl text-sm font-medium flex items-center gap-2 whitespace-nowrap hover:bg-gray-50 transition-all">💇 Salón de Belleza</button>
+                        <button onclick="filtrarCategoria('Pesca')" class="cat-btn bg-white text-gray-600 border border-gray-200 px-5 py-2.5 rounded-xl text-sm font-medium flex items-center gap-2 whitespace-nowrap hover:bg-gray-50 transition-all">🎣 Pesca</button>
+                    </div>
+
+                    <!-- Flecha Derecha -->
+                    <button onclick="scrollCategories('right')" class="absolute right-0 z-10 flex items-center justify-center w-9 h-9 bg-white/90 backdrop-blur-sm border border-gray-200 rounded-full shadow-md text-gray-600 hover:text-indigo-600 hover:bg-indigo-50 -mr-3 transition-all focus:outline-none">
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
                 </div>
             </div>
 
-            <div class="w-full md:w-1/4 min-w-[200px]">
-                <label for="sortSelect" class="block text-xs font-bold text-slate-400 uppercase mb-2">Ordenar listados por:</label>
-                <select id="sortSelect" onchange="cambiarOrdenamiento()" class="w-full bg-slate-50 border border-gray-200 text-slate-700 text-sm font-semibold rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all">
-                    <option value="relevancia">⭐ Relevancia</option>
-                    <option value="nuevo">📅 Más Nuevo</option>
-                    <option value="puntuacion">📈 Mejor Puntuado</option>
-                    <option value="alfabetico">🔤 Orden Alfabético (A-Z)</option>
-                </select>
+            <div id="sort-container" class="transition-all duration-300">
+                <hr class="border-gray-100 my-6">
+                <!-- Fila de Ordenamiento -->
+                <div class="w-full flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <label for="sortSelect" class="block text-xs font-bold text-slate-400 uppercase">Ordenar listados por:</label>
+                    <div class="w-full sm:w-auto min-w-[250px]">
+                        <select id="sortSelect" onchange="cambiarOrdenamiento()" class="w-full bg-slate-50 border border-gray-200 text-slate-700 text-sm font-semibold rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all cursor-pointer">
+                            <option value="relevancia">⭐ Relevancia</option>
+                            <option value="nuevo">📅 Más Nuevo</option>
+                            <option value="puntuacion">📈 Mejor Puntuado</option>
+                            <option value="alfabetico">🔤 Orden Alfabético (A-Z)</option>
+                        </select>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
 
     <main class="max-w-7xl mx-auto px-4 space-y-12 pb-16">
+
+        <!-- SECCIÓN DINÁMICA DE CATEGORÍAS (Oculta en la página principal) -->
+        <section id="sec-categoria" class="hidden">
+            <div class="flex items-center justify-between mb-6 border-b border-gray-200 pb-4">
+                <div>
+                    <h2 class="text-xl md:text-3xl font-extrabold text-slate-900 uppercase tracking-tight">Categoría: <span id="titulo-categoria" class="text-indigo-600"></span></h2>
+                    <p class="text-sm text-gray-500 mt-1">Listado completo de establecimientos</p>
+                </div>
+                <span class="bg-indigo-100 text-indigo-800 text-xs font-bold px-4 py-2 rounded-full shadow-sm" id="count-categoria">Mostrando: 0</span>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6" id="grid-categoria"></div>
+        </section>
 
         <section id="sec-novedades">
             <div class="flex items-center justify-between mb-6">
@@ -223,54 +279,97 @@
 
         // 4. FILTROS Y RENDER DE COMERCIOS (Estructura arquitectónica intacta)
         function renderizarDirectorio() {
-            // A) Aplicar Filtro de Categoría
-            let filtrados = listaComerciosGlobal;
-            if (categoriaActual !== 'Todos') {
-                filtrados = filtrados.filter(item => item.categoria && item.categoria.toLowerCase().includes(categoriaActual.toLowerCase()));
-            }
+            const secNovedades = document.getElementById('sec-novedades');
+            const secPromociones = document.getElementById('sec-promociones');
+            const secDestacados = document.getElementById('sec-destacados');
+            const secCategoria = document.getElementById('sec-categoria');
+            const sortContainer = document.getElementById('sort-container');
 
-            // B) Aplicar Ordenamiento Matemático y Alfabético
-            if (ordenActual === 'relevancia') {
-                filtrados.sort((a, b) => Number(a.id) - Number(b.id)); 
-            } else if (ordenActual === 'nuevo') {
-                filtrados.sort((a, b) => Number(b.id) - Number(a.id)); 
-            } else if (ordenActual === 'puntuacion') {
-                filtrados.sort((a, b) => Number(b.estrellas || 0) - Number(a.estrellas || 0));
-            } else if (ordenActual === 'alfabetico') {
-                filtrados.sort((a, b) => (a.nombre || '').localeCompare(b.nombre || ''));
-            }
+            if (categoriaActual === 'Todos') {
+                // --- MODO PÁGINA PRINCIPAL ---
+                secNovedades.classList.remove('hidden');
+                secPromociones.classList.remove('hidden');
+                secDestacados.classList.remove('hidden');
+                secCategoria.classList.add('hidden');
+                if (sortContainer) sortContainer.classList.remove('hidden');
 
-            // C) Obtener las cajas HTML
-            const gridNovedades = document.getElementById('grid-novedades');
-            const gridPromociones = document.getElementById('grid-promociones');
-            const gridDestacados = document.getElementById('grid-destacados');
+                let filtrados = [...listaComerciosGlobal];
 
-            gridNovedades.innerHTML = '';
-            gridPromociones.innerHTML = '';
-            gridDestacados.innerHTML = '';
+                // Ordenamiento de Página Principal
+                if (ordenActual === 'relevancia') {
+                    filtrados.sort((a, b) => Number(a.id) - Number(b.id)); 
+                } else if (ordenActual === 'nuevo') {
+                    filtrados.sort((a, b) => Number(b.id) - Number(a.id)); 
+                } else if (ordenActual === 'puntuacion') {
+                    filtrados.sort((a, b) => Number(b.estrellas || 0) - Number(a.estrellas || 0));
+                } else if (ordenActual === 'alfabetico') {
+                    filtrados.sort((a, b) => (a.nombre || '').localeCompare(b.nombre || ''));
+                }
 
-            let contNovedades = 0, contPromociones = 0, contDestacados = 0;
+                const gridNovedades = document.getElementById('grid-novedades');
+                const gridPromociones = document.getElementById('grid-promociones');
+                const gridDestacados = document.getElementById('grid-destacados');
 
-            // D) Dibujar y repartir
-            filtrados.forEach(item => {
-                const tarjetaHTML = crearCardHtml(item);
-                // Si viene sin sección asignada en la base de datos (como los gratuitos), se manda a destacado por defecto para que sea visible
-                const seccion = item.seccion ? item.seccion.toLowerCase().trim() : 'destacado';
+                gridNovedades.innerHTML = '';
+                gridPromociones.innerHTML = '';
+                gridDestacados.innerHTML = '';
 
-                if (seccion === 'novedad') { gridNovedades.innerHTML += tarjetaHTML; contNovedades++; } 
-                else if (seccion === 'promocion') { gridPromociones.innerHTML += tarjetaHTML; contPromociones++; } 
-                else if (seccion === 'destacado') { gridDestacados.innerHTML += tarjetaHTML; contDestacados++; }
-            });
+                let contNovedades = 0, contPromociones = 0, contDestacados = 0;
 
-            // E) Actualizar contadores
-            document.getElementById('count-novedades').innerText = `Mostrando: ${contNovedades}`;
-            document.getElementById('count-promociones').innerText = `Mostrando: ${contPromociones}`;
-            document.getElementById('count-destacados').innerText = `Mostrando: ${contDestacados}`;
+                filtrados.forEach(item => {
+                    const tarjetaHTML = crearCardHtml(item);
+                    const seccion = item.seccion ? item.seccion.toLowerCase().trim() : 'destacado';
+
+                    if (seccion === 'novedad') { gridNovedades.innerHTML += tarjetaHTML; contNovedades++; } 
+                    else if (seccion === 'promocion') { gridPromociones.innerHTML += tarjetaHTML; contPromociones++; } 
+                    else if (seccion === 'destacado') { gridDestacados.innerHTML += tarjetaHTML; contDestacados++; }
+                });
+
+                document.getElementById('count-novedades').innerText = `Mostrando: ${contNovedades}`;
+                document.getElementById('count-promociones').innerText = `Mostrando: ${contPromociones}`;
+                document.getElementById('count-destacados').innerText = `Mostrando: ${contDestacados}`;
             
+            } else {
+                // --- MODO CATEGORÍA (Vista Unificada y Soporte Multi-Categoría) ---
+                secNovedades.classList.add('hidden');
+                secPromociones.classList.add('hidden');
+                secDestacados.classList.add('hidden');
+                secCategoria.classList.remove('hidden');
+                if (sortContainer) sortContainer.classList.add('hidden'); // Ocultar dropdown de orden
+
+                document.getElementById('titulo-categoria').innerText = categoriaActual;
+
+                // El método includes() permite que si en la base de datos escribes "Restaurantes, Cafetería", el local aparezca en ambos filtros.
+                let filtrados = listaComerciosGlobal.filter(item => item.categoria && item.categoria.toLowerCase().includes(categoriaActual.toLowerCase()));
+
+                // REGLA SOLICITADA: Pagos por estrellas -> Gratuitos alfabéticamente
+                filtrados.sort((a, b) => {
+                    const aActivo = a.estado_pago && a.estado_pago.toLowerCase() === 'activo';
+                    const bActivo = b.estado_pago && b.estado_pago.toLowerCase() === 'activo';
+
+                    if (aActivo && !bActivo) return -1; // Pagos arriba
+                    if (!aActivo && bActivo) return 1;  // Gratuitos abajo
+
+                    if (aActivo && bActivo) {
+                        return (Number(b.estrellas) || 0) - (Number(a.estrellas) || 0); // Entre pagos: por estrellas
+                    } else {
+                        return (a.nombre || '').localeCompare(b.nombre || ''); // Entre gratuitos: Alfabético
+                    }
+                });
+
+                const gridCategoria = document.getElementById('grid-categoria');
+                gridCategoria.innerHTML = '';
+                filtrados.forEach(item => {
+                    gridCategoria.innerHTML += crearCardHtml(item);
+                });
+                
+                document.getElementById('count-categoria').innerText = `Mostrando: ${filtrados.length}`;
+            }
+
             buscarComercio();
         }
 
-        // 5. CREADOR VISUAL DE TARJETAS (Actualizado con lógica de conversión y dirección inteligente)
+        // 5. CREADOR VISUAL DE TARJETAS (Actualizado con horarios inteligentes y categorías múltiples)
         function crearCardHtml(item) {
             const esActivo = item.estado_pago && item.estado_pago.toLowerCase() === 'activo';
 
@@ -280,11 +379,42 @@
                     <span class="text-gray-400 ml-1">(${item.estrellas})</span>
                  </div>` : '';
 
-            // Lógica de Horario adaptativa (Funciona con cabecera singular o plural en la Sheet)
-            const ahora = new Date().getHours();
+            // LÓGICA DE HORARIO MULTI-JORNADA AVANZADA
             const campoHorario = item.horario || item.horarios || '';
-            const [apertura, cierre] = campoHorario ? campoHorario.split('-').map(h => parseInt(h)) : [0, 0];
-            const estaAbierto = ahora >= apertura && ahora < cierre;
+            
+            function verificarAbierto(horarioStr) {
+                if(!horarioStr || horarioStr.trim() === '') return false;
+                
+                const now = new Date();
+                // Convertimos la hora actual en minutos totales para comparar exacto (ej: 8:30 = 510)
+                const currentMins = now.getHours() * 60 + now.getMinutes();
+                
+                // Dividir por comas para soportar dobles jornadas (ej: 8:00-12:00, 14:00-19:00)
+                const rangos = horarioStr.toLowerCase().replace(/ y /g, ',').split(',');
+                
+                for(let rango of rangos) {
+                    const partes = rango.split('-');
+                    if(partes.length === 2) {
+                        const parseTime = (t) => {
+                            let p = t.trim().split(':');
+                            return (parseInt(p[0]) || 0) * 60 + (p.length > 1 ? parseInt(p[1]) : 0);
+                        };
+                        
+                        const minApertura = parseTime(partes[0]);
+                        const minCierre = parseTime(partes[1]);
+                        
+                        // Si cierra después de la medianoche (ej: 18:00 - 02:00)
+                        if (minCierre <= minApertura) {
+                            if (currentMins >= minApertura || currentMins < minCierre) return true;
+                        } else {
+                            if (currentMins >= minApertura && currentMins < minCierre) return true;
+                        }
+                    }
+                }
+                return false;
+            }
+
+            const estaAbierto = verificarAbierto(campoHorario);
             
             const estadoHtml = `
                 <span class="absolute top-3 left-3 px-2 py-1 rounded-md text-[10px] font-bold text-white uppercase tracking-wider ${estaAbierto ? 'bg-green-500' : 'bg-red-500'}">
@@ -292,8 +422,11 @@
                 </span>
             `;
 
-            // Lógica de dirección adaptativa (Funciona con cabecera direccion o dirección con tilde)
+            // Lógica de dirección adaptativa
             const textoDireccion = item.direccion || item.dirección || 'Inírida, Guainía';
+
+            // Formatear categorías para que si vienen varias, se vean separadas por un punto bonito
+            const categoriasMostrar = (item.categoria || '').split(',').map(c => c.trim()).join(' • ');
 
             // Lógica del botón y diseño según Estado de Pago
             let botonHTML = '';
@@ -301,7 +434,7 @@
             let iconoVerificacion = '';
 
             if (!esActivo) {
-                // Tarjetas Gratuitas / Inactivas: Tono elegante sutil y botón dinámico que asienta el valor en el formulario
+                // Tarjetas Gratuitas / Inactivas
                 estiloTarjeta = "bg-slate-50/90 border-slate-200 opacity-95";
                 iconoVerificacion = `<i class="fa-solid fa-location-dot text-slate-400"></i>`;
                 
@@ -330,7 +463,6 @@
                 }
             }
 
-            // Render final manteniendo perfectamente tu diseño estético original
             return `
                 <div class="${estiloTarjeta} rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border flex flex-col justify-between group h-full">
                     <div class="relative overflow-hidden h-40 bg-gray-100">
@@ -341,7 +473,7 @@
                     <div class="p-5 flex-1 flex flex-col justify-between space-y-3">
                         <div class="space-y-1.5">
                             <div class="flex items-center gap-1.5 text-[10px] font-bold tracking-wide text-indigo-500 uppercase">
-                                ${iconoVerificacion} ${item.categoria}
+                                ${iconoVerificacion} ${categoriasMostrar}
                             </div>
                             <h3 class="font-extrabold text-slate-900 text-lg leading-tight">${item.nombre}</h3>
                             
@@ -361,7 +493,7 @@
         // 6. BUSCADOR EN VIVO
         function buscarComercio() {
             const input = document.getElementById('searchInput').value.toLowerCase();
-            const tarjetas = document.querySelectorAll('#grid-novedades > div, #grid-promociones > div, #grid-destacados > div');
+            const tarjetas = document.querySelectorAll('#grid-novedades > div, #grid-promociones > div, #grid-destacados > div, #grid-categoria > div');
 
             tarjetas.forEach(tarjeta => {
                 const texto = tarjeta.innerText.toLowerCase();
@@ -477,6 +609,17 @@
 
             const mensaje = `Hola, me gustaría publicar en este directorio web.%0A%0A*Nombre:* ${nombre}%0A*Celular:* ${celular}%0A*Empresa:* ${empresa}%0A*De qué se trata:* ${descripcion}`;
             window.open(`https://wa.me/573102881717?text=${mensaje}`, '_blank');
+        }
+
+        // 10. SCROLL HORIZONTAL DE CATEGORÍAS
+        function scrollCategories(direction) {
+            const container = document.getElementById('categoriesContainer');
+            const scrollAmount = 300; // Cantidad de píxeles a desplazar por clic
+            if (direction === 'left') {
+                container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+            } else {
+                container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+            }
         }
 
         // ARRANQUE DE LA APP
